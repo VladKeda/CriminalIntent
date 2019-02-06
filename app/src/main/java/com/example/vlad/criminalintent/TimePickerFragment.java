@@ -1,7 +1,5 @@
 package com.example.vlad.criminalintent;
 
-
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -13,23 +11,24 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.DatePicker;
+import android.widget.TimePicker;
+
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 
-public class DatePickerFragment extends DialogFragment {
+public class TimePickerFragment extends DialogFragment {
     private static final String ARG_DATE = "date";
-    private DatePicker datePicker;
+    private TimePicker timePicker;
     public static final String EXTRA_DATE = "com.example.vlad.criminalintent.date";
 
-    public static DatePickerFragment newInstance(Date date){
+    public static TimePickerFragment newInstance(Date date) {
         Bundle args = new Bundle();
         args.putSerializable(ARG_DATE, date);
 
-        DatePickerFragment fragment = new DatePickerFragment();
+        TimePickerFragment fragment = new TimePickerFragment();
         fragment.setArguments(args);
+
         return fragment;
     }
 
@@ -39,36 +38,30 @@ public class DatePickerFragment extends DialogFragment {
         Date date = (Date) getArguments().getSerializable(ARG_DATE);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
 
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_time, null);
 
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_date, null);
-
-        datePicker = (DatePicker) view.findViewById(R.id.dialog_date_picker);
-        datePicker.init(year, month, day, null);
+        timePicker = (TimePicker) view.findViewById(R.id.dialog_time_picker);
+        timePicker.setIs24HourView(true);
+        timePicker.setCurrentHour(hour);
+        timePicker.setCurrentMinute(minute);
 
         return new AlertDialog.Builder(getActivity())
                 .setView(view)
-                .setTitle(R.string.date_picker_title)
+                .setTitle(R.string.time_picker_title)
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        int year = datePicker.getYear();
-                        int month = datePicker.getMonth();
-                        int day = datePicker.getDayOfMonth();
-//                        Date date = new GregorianCalendar(year, month, day)
-//                                .getTime();
-//
-//                        sendResult(Activity.RESULT_OK, date);
+                        int hour = timePicker.getCurrentHour();
+                        int minute = timePicker.getCurrentMinute();
                         Date date = (Date) getArguments().getSerializable(ARG_DATE);
                         Calendar calendar = Calendar.getInstance();
 
                         calendar.setTime(date);
-                        calendar.set(Calendar.YEAR, year);
-                        calendar.set(Calendar.MONTH, month);
-                        calendar.set(Calendar.DAY_OF_MONTH, day);
+                        calendar.set(Calendar.HOUR_OF_DAY, hour);
+                        calendar.set(Calendar.MINUTE, minute);
 
                         sendResult(Activity.RESULT_OK, calendar.getTime());
                     }
@@ -76,7 +69,7 @@ public class DatePickerFragment extends DialogFragment {
                 .create();
     }
 
-    private void sendResult(int resultCode, Date date){
+    private void sendResult(int resultCode, Date date) {
         if (getTargetFragment() == null){
             return;
         }

@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.text.DateFormat;
 import java.util.List;
 
 public class CrimeListFragment extends Fragment {
@@ -40,7 +42,7 @@ public class CrimeListFragment extends Fragment {
         public void bind(Crime crime) {
             this.crime = crime;
             titleTextView.setText(this.crime.getTitle());
-            dateTextView.setText(this.crime.getDate().toString());
+            dateTextView.setText(DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT).format(this.crime.getDate()));
             solvedImageView.setVisibility(this.crime.isSolved() ? View.VISIBLE : View.INVISIBLE);
         }
 
