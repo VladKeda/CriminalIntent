@@ -25,7 +25,6 @@ public class CrimeListFragment extends Fragment {
     private boolean subtitleVisible = false;
     private RecyclerView recyclerView;
     private CrimeAdapter adapter;
-//    private int lastClickPosition;
 
 
     private class CrimeHolder extends RecyclerView.ViewHolder
@@ -54,7 +53,6 @@ public class CrimeListFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-//            lastClickPosition = getAdapterPosition();
             Intent intent = CrimePagerActivity.newIntent(getActivity(), crime.getId());
             startActivity(intent);
         }
@@ -83,6 +81,10 @@ public class CrimeListFragment extends Fragment {
         @Override
         public int getItemCount() {
             return crimes.size();
+        }
+
+        public void setCrimes(List<Crime> crimes) {
+            this.crimes = crimes;
         }
     }
 
@@ -158,13 +160,14 @@ public class CrimeListFragment extends Fragment {
     }
 
     private void updateUI() {
+        CrimeLab crimeLab = CrimeLab.getInstance(getActivity());
+        List<Crime> crimes = crimeLab.getCrimes();
+
         if (adapter == null) {
-            CrimeLab crimeLab = CrimeLab.getInstance(getActivity());
-            List<Crime> crimes = crimeLab.getCrimes();
             adapter = new CrimeAdapter(crimes);
             recyclerView.setAdapter(adapter);
         } else {
-//            adapter.notifyItemChanged(lastClickPosition);
+            adapter.setCrimes(crimes);
             adapter.notifyDataSetChanged();
         }
 
